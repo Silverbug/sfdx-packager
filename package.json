@@ -1,7 +1,7 @@
 {
   "name": "sfdx-packager",
   "version": "0.11.0",
-  "description": "CLI tool for building Salesforce.com package.xml files from git diffs",
+  "description": "CLI tool for building Salesforce.com DX package.xml files from git diffs",
   "main": "index.js",
   "bin": {
     "sfdxpackage": "./index.js"
@@ -17,12 +17,12 @@
   },
   "keywords": [
     "salesforce",
-    "sfdc",
     "git-diff",
     "salesforce.com",
     "force.com",
     "ci",
-    "sfdx"
+    "sfdx",
+    "package.xml"
   ],
   "author": "Silverbug",
   "license": "MIT",
