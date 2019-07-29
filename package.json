@@ -1,6 +1,6 @@
 {
   "name": "sfdx-packager",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "CLI tool for building Salesforce.com DX package.xml files from git diffs",
   "main": "index.js",
   "bin": {

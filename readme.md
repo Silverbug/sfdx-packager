@@ -6,7 +6,7 @@ Designed to work with SFDX via Visual Studio Code
 ## Install
 
 ```
-npm install -g sf-packager
+npm install -g sfdx-packager
 ```
 
 ## Usage
