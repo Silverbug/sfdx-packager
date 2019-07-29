@@ -1,5 +1,5 @@
 {
-  "name": "sf-packager",
+  "name": "sfdx-packager",
   "version": "0.10.1",
   "description": "CLI tool for building Salesforce.com package.xml files from git diffs",
   "main": "index.js",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:dlively1/sf-packager.git"
+    "url": "git@github.com:Silverbug/sfdx-packager.git"
   },
   "keywords": [
     "salesforce",
@@ -21,9 +21,10 @@
     "git-diff",
     "salesforce.com",
     "force.com",
-    "ci"
+    "ci",
+    "sfdx"
   ],
-  "author": "dlively",
+  "author": "Silverbug",
   "license": "MIT",
   "dependencies": {
     "commander": "2.9.0",
