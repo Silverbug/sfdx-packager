@@ -6,7 +6,7 @@
  * Also used in larger orgs to avoid deploying all metadata in automated deployments
  *
  * usage:
- *  $ sfpackage master featureBranch ./deploy/
+ *  $ sfdxpackage master featureBranch ./deploy/
  *
  *  This will create a file at ./deploy/featureBranch/unpackaged/package.xml
  *  and copy each metadata item into a matching folder.
@@ -61,7 +61,6 @@ program
 
         //get current folder
         let baseFolder = 'force-app/main/default/';
-        let baseParts = baseFolder.split('/');
 
         fileList.forEach(function (fileName) {
 
@@ -69,8 +68,6 @@ program
             const operation = fileName.slice(0,1);
             // remove the operation and spaces from fileName
             fileName = fileName.slice(1).trim();
-
-            let fullFileName = fileName;
 
             //ensure file is inside of src directory of project
             if (fileName && fileName.length > baseFolder.length && fileName.substring(0,baseFolder.length) === baseFolder) {
@@ -80,7 +77,7 @@ program
                     return;
                 }
 
-                if(fileName.indexOf(baseFolder) == 0){
+                if(fileName.indexOf(baseFolder) === 0){
                     fileName = fileName.substr(baseFolder.length);
                 }
 

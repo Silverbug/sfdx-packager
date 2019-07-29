@@ -1,10 +1,10 @@
 {
   "name": "sfdx-packager",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "CLI tool for building Salesforce.com package.xml files from git diffs",
   "main": "index.js",
   "bin": {
-    "sfpackage": "./index.js"
+    "sfdxpackage": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
