@@ -58,6 +58,11 @@ program
         let deletesHaveOccurred = false;
 
         const fileList = gitDiffStdOut.split('\n');
+
+        //get current folder
+        let baseFolder = 'force-app/main/default/';
+        let baseParts = baseFolder.split('/');
+
         fileList.forEach(function (fileName) {
 
             // get the git operation
@@ -65,30 +70,37 @@ program
             // remove the operation and spaces from fileName
             fileName = fileName.slice(1).trim();
 
+            let fullFileName = fileName;
+
             //ensure file is inside of src directory of project
-            if (fileName && fileName.substring(0,3) === 'src') {
+            if (fileName && fileName.length > baseFolder.length && fileName.substring(0,baseFolder.length) === baseFolder) {
 
                 //ignore changes to the package.xml file
-                if(fileName === 'src/package.xml') {
+                if(fileName === 'manifest/package.xml') {
                     return;
+                }
+
+                if(fileName.indexOf(baseFolder) == 0){
+                    fileName = fileName.substr(baseFolder.length);
                 }
 
                 const parts = fileName.split('/');
                 // Check for invalid fileName, likely due to data stream exceeding buffer size resulting in incomplete string
                 // TODO: need a way to ensure that full fileNames are processed - increase buffer size??
-                if (parts[2] === undefined) {
+                
+                if (parts[1] === undefined) {
                     console.error('File name "%s" cannot be processed, exiting', fileName);
                     process.exit(1);
                 }
-
+                
                 let meta;
 
-                if (parts.length === 4) {
+                if (parts.length === 3) {
                     // Processing metadata with nested folders e.g. emails, documents, reports
-                    meta = parts[2] + '/' + parts[3].split('.')[0];
+                    meta = parts[1] + '/' + parts[2].split('.')[0];
                 } else {
                     // Processing metadata without nested folders. Strip -meta from the end.
-                    meta = parts[2].split('.')[0].replace('-meta', '');
+                    meta = parts[1].split('.')[0].replace('-meta', '');
                 }
 
                 if (operation === 'A' || operation === 'M') {
@@ -96,24 +108,24 @@ program
                     console.log('File was added or modified: %s', fileName);
                     fileListForCopy.push(fileName);
 
-                    if (!metaBag.hasOwnProperty(parts[1])) {
-                        metaBag[parts[1]] = [];
+                    if (!metaBag.hasOwnProperty(parts[0])) {
+                        metaBag[parts[0]] = [];
                     }
 
-                    if (metaBag[parts[1]].indexOf(meta) === -1) {
-                        metaBag[parts[1]].push(meta);
+                    if (metaBag[parts[0]].indexOf(meta) === -1) {
+                        metaBag[parts[0]].push(meta);
                     }
                 } else if (operation === 'D') {
                     // file was deleted
                     console.log('File was deleted: %s', fileName);
                     deletesHaveOccurred = true;
 
-                    if (!metaBagDestructive.hasOwnProperty(parts[1])) {
-                        metaBagDestructive[parts[1]] = [];
+                    if (!metaBagDestructive.hasOwnProperty(parts[0])) {
+                        metaBagDestructive[parts[0]] = [];
                     }
 
-                    if (metaBagDestructive[parts[1]].indexOf(meta) === -1) {
-                        metaBagDestructive[parts[1]].push(meta);
+                    if (metaBagDestructive[parts[0]].indexOf(meta) === -1) {
+                        metaBagDestructive[parts[0]].push(meta);
                     }
                 } else {
                     // situation that requires review
@@ -136,17 +148,17 @@ program
 
         console.log('Building in directory %s', target);
 
-        buildPackageDir(target, branch, metaBag, packageXML, false, (err, buildDir) => {
+        buildPackageDir(baseFolder, target, branch, metaBag, packageXML, false, (err, buildDir) => {
             if (err) {
                 return console.error(err);
             }
 
-            copyFiles(currentDir, buildDir, fileListForCopy);
+            copyFiles(currentDir + '/' + baseFolder, buildDir, fileListForCopy);
             console.log('Successfully created package.xml and files in %s',buildDir);
         });
 
         if (deletesHaveOccurred) {
-            buildPackageDir(target, branch, metaBagDestructive, destructiveXML, true, (err, buildDir) => {
+            buildPackageDir(baseFolder, target, branch, metaBagDestructive, destructiveXML, true, (err, buildDir) => {
 
                 if (err) {
                     return console.error(err);
