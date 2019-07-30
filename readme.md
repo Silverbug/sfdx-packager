@@ -3,6 +3,8 @@
 CLI Tool to generate Salesforce.com package.xml (and destructiveChange.xml) files based on git diff between two branches. 
 Designed to work with SFDX via Visual Studio Code
 
+**Please check your package before deploying as this script is still in development**
+
 ## Install
 
 ```
