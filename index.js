@@ -85,14 +85,28 @@ program
                 // Check for invalid fileName, likely due to data stream exceeding buffer size resulting in incomplete string
                 // TODO: need a way to ensure that full fileNames are processed - increase buffer size??
                 
+                if(parts[0] === 'staticresources'){
+                    return;
+                }
                 if (parts[1] === undefined) {
                     console.error('File name "%s" cannot be processed, exiting', fileName);
                     process.exit(1);
                 }
                 
                 let meta;
+                let metaType = parts[0];
 
-                if (parts.length === 3) {
+                if (parts.length === 4) {
+                    // processing something in custom objects
+
+                    meta = parts[1] + '.' + parts[3].split('.')[0];
+                    metaType = parts[2];
+                    
+                    if(metaType === 'webLinks' && parts[0] === 'objects'){
+                        metaType = 'objectWebLinks';
+                    }
+
+                } else if (parts.length === 3) {
                     // Processing metadata with nested folders e.g. emails, documents, reports
                     meta = parts[1] + '/' + parts[2].split('.')[0];
                 } else {
@@ -105,24 +119,24 @@ program
                     console.log('File was added or modified: %s', fileName);
                     fileListForCopy.push(fileName);
 
-                    if (!metaBag.hasOwnProperty(parts[0])) {
-                        metaBag[parts[0]] = [];
+                    if (!metaBag.hasOwnProperty(metaType)) {
+                        metaBag[metaType] = [];
                     }
 
-                    if (metaBag[parts[0]].indexOf(meta) === -1) {
-                        metaBag[parts[0]].push(meta);
+                    if (metaBag[metaType].indexOf(meta) === -1) {
+                        metaBag[metaType].push(meta);
                     }
                 } else if (operation === 'D') {
                     // file was deleted
                     console.log('File was deleted: %s', fileName);
                     deletesHaveOccurred = true;
 
-                    if (!metaBagDestructive.hasOwnProperty(parts[0])) {
-                        metaBagDestructive[parts[0]] = [];
+                    if (!metaBagDestructive.hasOwnProperty(metaType)) {
+                        metaBagDestructive[metaType] = [];
                     }
 
-                    if (metaBagDestructive[parts[0]].indexOf(meta) === -1) {
-                        metaBagDestructive[parts[0]].push(meta);
+                    if (metaBagDestructive[metaType].indexOf(meta) === -1) {
+                        metaBagDestructive[metaType].push(meta);
                     }
                 } else {
                     // situation that requires review
