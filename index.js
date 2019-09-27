@@ -113,7 +113,12 @@ program
                     meta = parts[1] + '/' + parts[2].split('.')[0];
                 } else {
                     // Processing metadata without nested folders. Strip -meta from the end.
-                    meta = parts[1].split('.')[0].replace('-meta', '');
+                    let metaParts = parts[1].split('.');
+                    meta = metaParts[0].replace('-meta', '');
+                    if(metaParts.length > 3){ // this allows for custom metadata
+                        metaParts.pop();
+                        meta = metaParts.join('.').replace('.md-meta', '').replace('-meta', '');
+                    }
                 }
 
                 if (operation === 'A' || operation === 'M') {
