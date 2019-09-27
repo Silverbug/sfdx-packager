@@ -24,6 +24,7 @@ program
     .version(packageVersion)
     .option('-d, --dryrun', 'Only print the package.xml and destructiveChanges.xml that would be generated')
     .option('-p, --pversion [version]', 'Salesforce version of the package.xml', parseInt)
+    .option('-s, --silent', 'Run silently, no output')
     .action(function (compare, branch, target) {
 
         if (!branch || !compare) {
@@ -33,6 +34,7 @@ program
         }
 
         const dryrun = program.dryrun;
+        const silent = program.silent;
 
         if (!dryrun && !target) {
             console.error('target required when not dry-run');
@@ -46,7 +48,7 @@ program
         const gitDiffStdErr = gitDiff.stderr.toString();
 
         if (gitDiffStdErr) {
-            console.error('An error has occurred: %s', gitDiffStdErr);
+            if(!silent) console.error('An error has occurred: %s', gitDiffStdErr);
             process.exit(1);
         }
 
@@ -89,7 +91,7 @@ program
                     return;
                 }
                 if (parts[1] === undefined) {
-                    console.error('File name "%s" cannot be processed, exiting', fileName);
+                    if(!silent) console.error('File name "%s" cannot be processed, exiting', fileName);
                     process.exit(1);
                 }
                 
@@ -116,7 +118,7 @@ program
 
                 if (operation === 'A' || operation === 'M') {
                     // file was added or modified - add fileName to array for unpackaged and to be copied
-                    console.log('File was added or modified: %s', fileName);
+                    if(!silent) console.log('File was added or modified: %s', fileName);
                     fileListForCopy.push(fileName);
 
                     if (!metaBag.hasOwnProperty(metaType)) {
@@ -128,7 +130,7 @@ program
                     }
                 } else if (operation === 'D') {
                     // file was deleted
-                    console.log('File was deleted: %s', fileName);
+                    if(!silent) console.log('File was deleted: %s', fileName);
                     deletesHaveOccurred = true;
 
                     if (!metaBagDestructive.hasOwnProperty(metaType)) {
@@ -140,7 +142,7 @@ program
                     }
                 } else {
                     // situation that requires review
-                    return console.error('Operation on file needs review: %s', fileName);
+                    return (!silent)?console.error('Operation on file needs review: %s', fileName):'';
                 }
             }
         });
@@ -157,25 +159,25 @@ program
             process.exit(0);
         }
 
-        console.log('Building in directory %s', target);
+        if(!silent) console.log('Building in directory %s', target);
 
         buildPackageDir(baseFolder, target, branch, metaBag, packageXML, false, (err, buildDir) => {
             if (err) {
-                return console.error(err);
+                return (!silent)?console.error(err):'';
             }
 
             copyFiles(currentDir + '/' + baseFolder, buildDir, fileListForCopy);
-            console.log('Successfully created package.xml and files in %s',buildDir);
+            if(!silent) console.log('Successfully created package.xml and files in %s',buildDir);
         });
 
         if (deletesHaveOccurred) {
             buildPackageDir(baseFolder, target, branch, metaBagDestructive, destructiveXML, true, (err, buildDir) => {
 
                 if (err) {
-                    return console.error(err);
+                    return (!silent)?console.error(err):'';
                 }
 
-                console.log('Successfully created destructiveChanges.xml in %s',buildDir);
+                if(!silent) console.log('Successfully created destructiveChanges.xml in %s',buildDir);
             });
         }
     });
