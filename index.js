@@ -48,7 +48,7 @@ program
         const gitDiffStdErr = gitDiff.stderr.toString();
 
         if (gitDiffStdErr) {
-            if(!silent) console.error('An error has occurred: %s', gitDiffStdErr);
+            if(!silent) { console.error('An error has occurred: %s', gitDiffStdErr); }
             process.exit(1);
         }
 
@@ -91,7 +91,7 @@ program
                     return;
                 }
                 if (parts[1] === undefined) {
-                    if(!silent) console.error('File name "%s" cannot be processed, exiting', fileName);
+                    if(!silent){ console.error('File name "%s" cannot be processed, exiting', fileName); }
                     process.exit(1);
                 }
                 
@@ -123,7 +123,7 @@ program
 
                 if (operation === 'A' || operation === 'M') {
                     // file was added or modified - add fileName to array for unpackaged and to be copied
-                    if(!silent) console.log('File was added or modified: %s', fileName);
+                    if(!silent){ console.log('File was added or modified: %s', fileName); }
                     fileListForCopy.push(fileName);
 
                     if (!metaBag.hasOwnProperty(metaType)) {
@@ -135,7 +135,7 @@ program
                     }
                 } else if (operation === 'D') {
                     // file was deleted
-                    if(!silent) console.log('File was deleted: %s', fileName);
+                    if(!silent){ console.log('File was deleted: %s', fileName); }
                     deletesHaveOccurred = true;
 
                     if (!metaBagDestructive.hasOwnProperty(metaType)) {
@@ -164,7 +164,7 @@ program
             process.exit(0);
         }
 
-        if(!silent) console.log('Building in directory %s', target);
+        if(!silent){ console.log('Building in directory %s', target); }
 
         buildPackageDir(baseFolder, target, branch, metaBag, packageXML, false, (err, buildDir) => {
             if (err) {
@@ -172,7 +172,7 @@ program
             }
 
             copyFiles(currentDir + '/' + baseFolder, buildDir, fileListForCopy);
-            if(!silent) console.log('Successfully created package.xml and files in %s',buildDir);
+            if(!silent){ console.log('Successfully created package.xml and files in %s',buildDir); }
         });
 
         if (deletesHaveOccurred) {
@@ -182,7 +182,7 @@ program
                     return (!silent)?console.error(err):'';
                 }
 
-                if(!silent) console.log('Successfully created destructiveChanges.xml in %s',buildDir);
+                if(!silent){ console.log('Successfully created destructiveChanges.xml in %s',buildDir); }
             });
         }
     });
