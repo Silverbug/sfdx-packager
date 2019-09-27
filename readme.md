@@ -7,6 +7,8 @@ Designed to work with SFDX via Visual Studio Code
 
 ## Install
 
+https://www.npmjs.com/package/sfdx-packager
+
 ```
 npm install -g sfdx-packager
 ```
